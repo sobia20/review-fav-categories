@@ -1,28 +1,35 @@
 import {
   Button,
-  Center,
   Card,
   CardHeader,
-  CardBody,
-  SimpleGrid,
+  CardBody
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { useRouter } from 'next/router';
+import { getCategories } from '../getCategories.jsx'
+
 
 export default function Main() {
+  const router = useRouter()
   const categories = [
-    { title: "Movies" },
-    { title: "Books" },
-    { title: "TV Serials" },
-    { title: "Games" },
-    { title: "Manga" },
-    { title: "Anime" },
+    { title: "Movies", link: "movies" },
+    { title: "Books", link: "books" },
+    { title: "TV Serials", link: "tv_serials" },
+    { title: "Games", link: "games" },
+    { title: "Manga", link: "manga" },
+    { title: "Anime", link: "anime" },
   ];
-
-  function onCardClick(title) {
-    console.log("card", title);
+  
+  getCategories()
+  
+  function onCardClick(link) {
+    router.push(`/${link}`)
   }
 
-  function onButtonClick() {}
+  function onButtonClick(e, link) {
+    e.stopPropagation()
+    router.push(`/${link}/new`)
+  }
 
   let categoriesCards = [];
   categories.forEach((category, ind) => {
@@ -30,13 +37,13 @@ export default function Main() {
       <Card
         cursor="pointer"
         key={ind}
-        onClick={() => onCardClick(category.title)}
+        onClick={(e) => onCardClick(category.link)}
       >
         <CardHeader>{category.title}</CardHeader>
         <CardBody>
           <Button
             iconSpacing={0}
-            onClick={onButtonClick}
+            onClick={(e)=>onButtonClick(e,category.link)}
             leftIcon={<AddIcon />}
             size="xs"
             style={{ float: "right", borderRadius: "50%" }}
@@ -47,10 +54,8 @@ export default function Main() {
   });
 
   return (
-    <Center>
-      <SimpleGrid columns={3} spacing={4}>
-        {categoriesCards}
-      </SimpleGrid>
-    </Center>
+    <>
+    {categoriesCards}
+    </>
   );
 }
